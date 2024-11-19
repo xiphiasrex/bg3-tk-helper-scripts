@@ -1,0 +1,111 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+
+KBSECTION
+//REGION check event for spawning treasure table loot
+IF
+TextEvent("treasure")
+AND
+DB_Avatars(_Player)
+AND
+NOT DB_XR_Treasure_Queue(_)
+AND
+GetTextEventParamString(1, _TreasureTable)
+THEN
+DB_XR_Treasure_Queue(_TreasureTable);
+PROC_XR_Treasure_CheckGive();
+//END_REGION
+
+
+//REGION check params
+PROC
+PROC_XR_Treasure_CheckGive()
+AND
+NOT GetTextEventParamInteger(2, _)
+THEN
+DB_XR_Treasure_Give(0);
+PROC_XR_Treasure_GenContainer();
+
+PROC
+PROC_XR_Treasure_CheckGive()
+AND
+GetTextEventParamInteger(2, _MoveToPlayer)
+AND
+_MoveToPlayer == 1
+THEN
+DB_XR_Treasure_Give(1);
+PROC_XR_Treasure_GenContainer();
+
+PROC
+PROC_XR_Treasure_CheckGive()
+AND
+GetTextEventParamInteger(2, _MoveToPlayer)
+AND
+_MoveToPlayer != 1
+THEN
+DB_XR_Treasure_Give(0);
+PROC_XR_Treasure_GenContainer();
+//END_REGION
+
+
+//REGION Generate container and set spawn event
+PROC
+PROC_XR_Treasure_GenContainer()
+AND
+DB_Avatars(_Player)
+AND
+CreateAtObject(CONT_Bag_A_3e6aac21-333b-4812-a554-376c2d157ba9, _Player, 0, 0, "XR_Treasure_ContainerCreated", 0, _Object)
+THEN
+DB_NOOP(1);
+//END_REGION
+
+
+//REGION Generate treasure and possibly give to avatar
+// Just generate items and stop
+IF
+EntityEvent((ITEM)_Item, "XR_Treasure_ContainerCreated")
+AND
+DB_Avatars(_Player)
+AND
+DB_XR_Treasure_Queue(_TreasureTable)
+AND
+DB_XR_Treasure_Give(0)
+THEN
+GenerateTreasure(_Item, _TreasureTable, 1, _Player);
+NOT DB_XR_Treasure_Queue(_TreasureTable);
+NOT DB_XR_Treasure_Give(0);
+
+// generate items
+IF
+EntityEvent((ITEM)_Item, "XR_Treasure_ContainerCreated")
+AND
+DB_Avatars(_Player)
+AND
+DB_XR_Treasure_Queue(_TreasureTable)
+AND
+DB_XR_Treasure_Give(1)
+THEN
+GenerateTreasure(_Item, _TreasureTable, 1, _Player);
+NOT DB_XR_Treasure_Queue(_TreasureTable);
+NOT DB_XR_Treasure_Give(1);
+RealtimeObjectTimerLaunch(_Item, "XR_Treasure_TreasureGenerated", 20);
+
+// move to player
+IF
+ObjectTimerFinished((ITEM)_Item, "XR_Treasure_TreasureGenerated")
+AND
+DB_Avatars(_Player)
+THEN
+MoveAllItemsTo(_Item, _Player, 0, 0, 1, 0);
+RealtimeObjectTimerLaunch(_Item, "XR_Treasure_TreasureMoved", 20);
+
+// delete container
+IF
+ObjectTimerFinished((ITEM)_Item, "XR_Treasure_TreasureMoved")
+THEN
+RequestDelete(_Item);
+//END_REGION
+EXITSECTION
+
+ENDEXITSECTION

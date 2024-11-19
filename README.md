@@ -5,7 +5,7 @@
 - [Setup Options](#setup-options)
 - [Usage](#usage)
     - [Checks and Saving Throws](#checks-and-saving-throws)
-    - [Spawning Treasure (WIP)](#spawning-treasure)
+    - [Spawning Treasure](#spawning-treasure)
     - [Spawning Creatures (WIP)](#spawning-creatures)
 - [Other Info](#other-info)
 
@@ -109,7 +109,22 @@ Short name should be case insensitive, but if using the full name they must be e
 
 
 ### Spawning Treasure
-WIP
+
+Command structure:  
+`oe treasure [Treasure Table] [Give to Avatar]`
+
+- Treasure Table
+    - **Required**
+    - Accepted values
+        - Needs to be a treasure table name (ex. `ST_GEN_Valuables_Jewelry_Gold`)
+    - Controls item(s) that are generated
+- Give to Avatar
+    - Optional
+        - Default is `0` (No)
+    - Accepted values
+        - `0` (No)
+        - `1` (Yes)
+    - Controls if the generated items are left in a container object at the avatars position, or placed into their inventory
 
 
 ### Spawning Creatures
