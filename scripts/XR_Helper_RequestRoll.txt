@@ -1,0 +1,171 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+// Shorthand for DC
+DB_XR_Roll_DC_Helper(0, (DIFFICULTYCLASS)Legacy_0_98d69b07-f551-4d77-af31-41d074748dc0);
+DB_XR_Roll_DC_Helper(5, (DIFFICULTYCLASS)Legacy_5_6e246ccd-6149-4ec4-a325-034309a18138);
+DB_XR_Roll_DC_Helper(10, (DIFFICULTYCLASS)Legacy_10_625be976-7a67-4394-97c8-14c69715ae4b);
+DB_XR_Roll_DC_Helper(15, (DIFFICULTYCLASS)Legacy_15_bddbb9b8-a242-4c3e-a2eb-3fd274c0c539);
+DB_XR_Roll_DC_Helper(20, (DIFFICULTYCLASS)Legacy_20_881bda2f-b08b-4788-b0ec-e410b5bacc57);
+
+// Ability checks shorthand
+DB_XR_Roll_Helper("STR", "Strength");
+DB_XR_Roll_Helper("DEX", "Dexterity");
+DB_XR_Roll_Helper("CON", "Consitution");
+DB_XR_Roll_Helper("INT", "Intelligence");
+DB_XR_Roll_Helper("WIS", "Wisdom");
+DB_XR_Roll_Helper("CHR", "Charisma");
+
+// Skill checks shorthand
+DB_XR_Roll_Helper("ACR", "Acrobatics");
+DB_XR_Roll_Helper("ANI", "AnimalHandling");
+DB_XR_Roll_Helper("ARC", "Arcana");
+DB_XR_Roll_Helper("ATH", "Athletics");
+DB_XR_Roll_Helper("DEC", "Deception");
+DB_XR_Roll_Helper("HIS", "History");
+DB_XR_Roll_Helper("INS", "Insight");
+DB_XR_Roll_Helper("ITM", "Intimidation");
+DB_XR_Roll_Helper("INV", "Investigation");
+DB_XR_Roll_Helper("MED", "Medicine");
+DB_XR_Roll_Helper("PCT", "Perception");
+DB_XR_Roll_Helper("PRF", "Performance");
+DB_XR_Roll_Helper("PSU", "Persuasion");
+DB_XR_Roll_Helper("REL", "Religion");
+DB_XR_Roll_Helper("SLE", "SleightOfHand");
+DB_XR_Roll_Helper("STE", "Stealth");
+DB_XR_Roll_Helper("SUR", "Survival");
+KBSECTION
+//REGION check event for skill/ability/saving roll
+// oe [check/save] [Skill/Ability Name or shortname] [DC] [Advantage/Disadvantage/Straight] [Active/Passive]
+IF 
+TextEvent("check")
+AND
+DB_Avatars(_Player)
+AND
+GetTextEventParamString(1, _RollName)
+THEN
+PROC_XR_Roll_NameCheck(_Player, "RawAbility", _RollName);
+
+IF 
+TextEvent("save")
+AND
+DB_Avatars(_Player)
+AND
+GetTextEventParamString(1, _RollName)
+THEN
+PROC_XR_Roll_NameCheck(_Player, "SavingThrow", _RollName);
+//END_REGION
+
+
+//REGION Determine ability/skill name
+// handle convert of shorthand to true ability/skill name
+PROC
+PROC_XR_Roll_NameCheck((CHARACTER)_Player, (STRING)_RollType, (STRING)_RollName)
+AND
+DB_XR_Roll_Helper(_RollName, _TrueName)
+THEN
+PROC_XR_Roll_DC(_Player, _RollType, _TrueName);
+
+// no shorthand matched, just pass on direct input
+PROC
+PROC_XR_Roll_NameCheck((CHARACTER)_Player, (STRING)_RollType, (STRING)_RollName)
+AND
+NOT DB_XR_Roll_Helper(_RollName, _)
+THEN
+PROC_XR_Roll_DC(_Player, _RollType, _RollName);
+//END_REGION
+
+
+//REGION Determine DC
+// check if DC param passed in
+PROC
+PROC_XR_Roll_DC((CHARACTER)_Player, (STRING)_RollType, (STRING)_RollName)
+AND
+GetTextEventParamInteger(2, _DCParam)
+THEN
+PROC_XR_Roll_DC_Convert(_Player, _RollType, _RollName, _DCParam);
+
+// able to convert
+PROC
+PROC_XR_Roll_DC_Convert((CHARACTER)_Player, (STRING)_RollType, (STRING)_RollName, (INTEGER)_DCParam)
+AND
+DB_XR_Roll_DC_Helper(_DCParam, _DC)
+THEN
+PROC_XR_Roll_Advantage(_Player, _RollType, _RollName, _DC);
+
+// not able to convert, pass on default (DC10)
+PROC
+PROC_XR_Roll_DC_Convert((CHARACTER)_Player, (STRING)_RollType, (STRING)_RollName, (INTEGER)_DCParam)
+AND
+NOT DB_XR_Roll_DC_Helper(_DCParam, _)
+THEN
+PROC_XR_Roll_Advantage(_Player, _RollType, _RollName, (DIFFICULTYCLASS)Legacy_10_625be976-7a67-4394-97c8-14c69715ae4b);
+
+// param not set, pass on default (DC10)
+PROC
+PROC_XR_Roll_DC((CHARACTER)_Player, (STRING)_RollType, (STRING)_RollName)
+AND
+NOT GetTextEventParamInteger(2, _)
+THEN
+PROC_XR_Roll_Advantage(_Player, _RollType, _RollName, (DIFFICULTYCLASS)Legacy_10_625be976-7a67-4394-97c8-14c69715ae4b);
+//END_REGION
+
+
+//REGION Determine Roll Type
+// check if advantage param passed in
+PROC
+PROC_XR_Roll_Advantage((CHARACTER)_Player, (STRING)_RollType, (STRING)_RollName, (DIFFICULTYCLASS)_DC)
+AND
+GetTextEventParamInteger(3, _HasAdvantage)
+THEN
+PROC_XR_Roll_Active(_Player, _RollType, _RollName, _DC, _HasAdvantage);
+
+// no param, use default (stright roll)
+PROC
+PROC_XR_Roll_Advantage((CHARACTER)_Player, (STRING)_RollType, (STRING)_RollName, (DIFFICULTYCLASS)_DC)
+AND
+NOT GetTextEventParamInteger(3, _)
+THEN
+PROC_XR_Roll_Active(_Player, _RollType, _RollName, _DC, 0);
+//END_REGION
+
+
+//REGION Determine Check Type
+// check if active flag passed in
+PROC
+PROC_XR_Roll_Active((CHARACTER)_Player, (STRING)_RollType, (STRING)_RollName, (DIFFICULTYCLASS)_DC, (INTEGER)_HasAdvantage)
+AND
+GetTextEventParamInteger(4, _IsActiveRoll)
+THEN
+PROC_XR_Roll_Final(_Player, _RollType, _RollName, _DC, _HasAdvantage, _IsActiveRoll);
+
+// no param, use default (Active)
+PROC
+PROC_XR_Roll_Active((CHARACTER)_Player, (STRING)_RollType, (STRING)_RollName, (DIFFICULTYCLASS)_DC, (INTEGER)_HasAdvantage)
+AND
+NOT GetTextEventParamInteger(4, _)
+THEN
+PROC_XR_Roll_Final(_Player, _RollType, _RollName, _DC, _HasAdvantage, 1);
+//END_REGION
+
+
+//REGION Request actual call
+// PROC for true call Active
+PROC
+PROC_XR_Roll_Final((CHARACTER)_Player, (STRING)_RollType, (STRING)_RollName, (DIFFICULTYCLASS)_DC, (INTEGER)_HasAdvantage, (INTEGER)_IsActiveRoll)
+AND
+_IsActiveRoll == 1
+THEN
+RequestActiveRoll(_Player, NULL_00000000-0000-0000-0000-000000000000, _RollType, _RollName, _DC, _HasAdvantage, "DEBUG_Roll");
+
+// PROC for true call Passive
+PROC
+PROC_XR_Roll_Final((CHARACTER)_Player, (STRING)_RollType, (STRING)_RollName, (DIFFICULTYCLASS)_DC, (INTEGER)_HasAdvantage, (INTEGER)_IsActiveRoll)
+AND
+_IsActiveRoll != 1
+THEN
+RequestPassiveRoll(_Player, NULL_00000000-0000-0000-0000-000000000000, _RollType, _RollName, _DC, _HasAdvantage, "DEBUG_Roll");
+//END_REGION
+EXITSECTION
+
+ENDEXITSECTION
