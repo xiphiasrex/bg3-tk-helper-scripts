@@ -6,13 +6,13 @@
 - [Usage](#usage)
     - [Checks and Saving Throws](#checks-and-saving-throws)
     - [Spawning Treasure](#spawning-treasure)
-    - [Spawning Creatures (WIP)](#spawning-creatures)
+    - [Spawning Creatures](#spawning-creatures)
 - [Other Info](#other-info)
 
 
 ## Setup Options
 
-1. Copy any script file(s) you want to use to \Data\Mods\MODNAME_UUID\Story\RawFiles\Goals
+1. Copy any script file(s) you want to use to `\Data\Mods\MODNAME_UUID\Story\RawFiles\Goals`
 2. Copy the script contents into an existing osiris script for your mod
 3. ~~Set the Util as a dependency from Project Settings. Either:~~
     - ~~Install from the in-game mod manager~~
@@ -26,6 +26,12 @@ To make sure the changes are picked up, do a build and reload of the story
 
 ## Usage
 Guide on using the toolkit console: [Shortcuts & Commands for debugging](https://mod.io/g/baldursgate3/r/list-of-all-editor-hints-commands-shortcuts)
+
+Several key things for using these scripts:
+- Keeping the mouse over the console window prevents key presses triggering game inputs
+- Page Up/Page Down cycle through commands
+- The auto complete sometimes interferes with text event command, I use Shift+Space between parameters to avoid unwanted auto complete
+- The prompt sometimes lags due to loading large auto complete lists.  Just give it a second
 
 
 ### Checks and Saving Throws
@@ -43,7 +49,7 @@ Command structure:
 - Skill/Ability Short/Full name
     - **Required**
     - Accepted values
-        - [See tables below](#short-names-and-full-names)
+        - [See Abilities and Skills tables below](#short-names-and-full-names)
     - Determines which ability or skill to roll
 - DC
     - Optional
@@ -62,7 +68,7 @@ Command structure:
         - `-1` (Disadvantage)
         - `0` (Straight Roll)
         - `1` (Advantage)
-    - Sets situational Advantage/Disadvange to leaves as Straight roll
+    - Sets situational Advantage/Disadvange or leaves as Straight roll
 - Active/Passive
     - Optional
         - Default value is `1` (Active)
@@ -128,7 +134,27 @@ Command structure:
 
 
 ### Spawning Creatures
-WIP
+
+Command structure:
+`oe spawn [Short name or GUID]`
+
+- Short name or GUID
+    - *Required*
+    - Accepted values
+        - Several short names are set up for basic spawns
+            - [See Spawns table below]()
+        - `Name_GUID` of for creature
+    - Type of spawn to create
+
+
+#### **Spawns**
+| Short name      | GUID                                                                                |
+| ---             | ---                                                                                 |
+| `mage`          | `Humans_Male_FlamingFist_Caster_B_91392ba7-4a09-40f2-80c3-5410a165adaa`             |
+| `melee`         | `Dwarves_Male_Hill_FlamingFist_Melee_Attacker_ff4900e5-ace9-4582-b1ca-dc144919f27d` |
+| `ranged`        | `Humans_Female_FlamingFist_Ranger_B_ec34598b-0a16-4b50-b271-c6682893837f`           |
+| `dino`          | `BASE_Dilophosaurus_ea400d0d-f3cc-4e12-b1a3-faf7e63e7780`                           |
+| `undead`        | `Undead_DarkJusticiar_Boss_89419ac3-95d1-4c90-9a29-7b6445acb270`                    |
 
 
 ## Other info

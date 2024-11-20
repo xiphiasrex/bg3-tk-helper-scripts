@@ -4,6 +4,7 @@ INITSECTION
 
 KBSECTION
 //REGION check event for spawning treasure table loot
+// oe treasure [treasure table] [give to avatar]
 IF
 TextEvent("treasure")
 AND
