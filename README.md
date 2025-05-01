@@ -2,7 +2,7 @@
  Helper scripts for testing in BG3 modding toolkit
 
 ## Contents
-- [Setup Options](#setup-options)
+- [Setup Steps](#setup-options)
 - [Usage](#usage)
     - [Checks and Saving Throws](#checks-and-saving-throws)
     - [Spawning Treasure](#spawning-treasure)
@@ -10,16 +10,11 @@
 - [Other Info](#other-info)
 
 
-## Setup Options
-
-1. Copy any script file(s) you want to use to `\Data\Mods\MODNAME_UUID\Story\RawFiles\Goals`
-2. Copy the script contents into an existing osiris script for your mod
-3. ~~Set the Util as a dependency from Project Settings. Either:~~
-    - ~~Install from the in-game mod manager~~
-    - ~~Download pak file from mod.io and place in user folder \AppData\Local\Larian Studios\Baldur's Gate 3\Mods~~
-    - I have not published the mod currently
-
-To make sure the changes are picked up, do a build and reload of the story
+## Setup Steps
+1. Either:
+    1. Copy any script file(s) you want to use to `\Data\Mods\MODNAME_UUID\Story\RawFiles\Goals`
+    2. Copy the script contents into an existing osiris script for your mod
+2. From the Story Editor do **Generate Definitions, Build and Reload**
 
 **BE SURE TO REMOVE SCRIPTS/FILES/DEPENDENCIES WHEN DONE TESTING AND BEFORE BUILDING PAK FILE**
 
@@ -35,7 +30,6 @@ Several key things for using these scripts:
 
 
 ### Checks and Saving Throws
-
 Command structure:  
 `oe [check/save] [Skill/Ability Short/Full name] [DC] [Advantage/Disadvantage/Straight] [Active/Passive]`
 
@@ -68,54 +62,52 @@ Command structure:
         - `-1` (Disadvantage)
         - `0` (Straight Roll)
         - `1` (Advantage)
-    - Sets situational Advantage/Disadvange or leaves as Straight roll
+    - Sets situational Advantage/Disadvantage or leaves as Straight roll
 - Active/Passive
     - Optional
         - Default value is `1` (Active)
     - Accepted values
         - `0` (Passive)
         - `1` (Active)
-    - Controls if the roll is active (user can apply buffs, use insipration, etc) or passive
+    - Controls if the roll is active (user can apply buffs, use inspiration, etc.) or passive
 
 
 ### short names and full names
-
-Short name should be case insensitive, but if using the full name they must be exact
+Short name should be case-insensitive, but if using the full name they must be exact
 
 #### **Abilities**
-| Short name     | Full name      |
-| ---            | ---            |
-| `str`          | `Strength`     |
-| `dex`          | `Dexterity`    |
-| `con`          | `Consitution`  |
-| `int`          | `Intelligence` |
-| `wis`          | `Wisdom`       |
-| `chr`          | `Charisma`     |
+| Short name | Full name      |
+|------------|----------------|
+| `str`      | `Strength`     |
+| `dex`      | `Dexterity`    |
+| `con`      | `Consitution`  |
+| `int`      | `Intelligence` |
+| `wis`      | `Wisdom`       |
+| `chr`      | `Charisma`     |
 
 #### **Skills**
-| Short name       | Full name        |
-| ---              | ---              |
-| `acr`            | `Acrobatics`     |
-| `ani`            | `AnimalHandling` |
-| `arc`            | `Arcana`         |
-| `ath`            | `Athletics`      |
-| `dec`            | `Deception`      |
-| `his`            | `History`        |
-| `ins`            | `Insight`        |
-| `itm`            | `Intimidation`   |
-| `inv`            | `Investigation`  |
-| `med`            | `Medicine`       |
-| `pct`            | `Perception`     |
-| `prf`            | `Performance`    |
-| `psu`            | `Persuasion`     |
-| `rel`            | `Religion`       |
-| `sle`            | `SleightOfHand`  |
-| `ste`            | `Stealth`        |
-| `sur`            | `Survival`       |
+| Short name | Full name        |
+|------------|------------------|
+| `acr`      | `Acrobatics`     |
+| `ani`      | `AnimalHandling` |
+| `arc`      | `Arcana`         |
+| `ath`      | `Athletics`      |
+| `dec`      | `Deception`      |
+| `his`      | `History`        |
+| `ins`      | `Insight`        |
+| `itm`      | `Intimidation`   |
+| `inv`      | `Investigation`  |
+| `med`      | `Medicine`       |
+| `pct`      | `Perception`     |
+| `prf`      | `Performance`    |
+| `psu`      | `Persuasion`     |
+| `rel`      | `Religion`       |
+| `sle`      | `SleightOfHand`  |
+| `ste`      | `Stealth`        |
+| `sur`      | `Survival`       |
 
 
 ### Spawning Treasure
-
 Command structure:  
 `oe treasure [Treasure Table] [Give to Avatar]`
 
@@ -134,7 +126,6 @@ Command structure:
 
 
 ### Spawning Creatures
-
 Command structure:
 `oe spawn [Short name or GUID]`
 
@@ -143,18 +134,18 @@ Command structure:
     - Accepted values
         - Several short names are set up for basic spawns
             - [See Spawns table below]()
-        - `Name_GUID` of for creature
+        - `Name_GUID` of root template for creature
     - Type of spawn to create
 
 
 #### **Spawns**
-| Short name      | GUID                                                                                |
-| ---             | ---                                                                                 |
-| `mage`          | `Humans_Male_FlamingFist_Caster_B_91392ba7-4a09-40f2-80c3-5410a165adaa`             |
-| `melee`         | `Dwarves_Male_Hill_FlamingFist_Melee_Attacker_ff4900e5-ace9-4582-b1ca-dc144919f27d` |
-| `ranged`        | `Humans_Female_FlamingFist_Ranger_B_ec34598b-0a16-4b50-b271-c6682893837f`           |
-| `dino`          | `BASE_Dilophosaurus_ea400d0d-f3cc-4e12-b1a3-faf7e63e7780`                           |
-| `undead`        | `Undead_DarkJusticiar_Boss_89419ac3-95d1-4c90-9a29-7b6445acb270`                    |
+| Short name | GUID                                                                                |
+|------------|-------------------------------------------------------------------------------------|
+| `mage`     | `Humans_Male_FlamingFist_Caster_B_91392ba7-4a09-40f2-80c3-5410a165adaa`             |
+| `melee`    | `Dwarves_Male_Hill_FlamingFist_Melee_Attacker_ff4900e5-ace9-4582-b1ca-dc144919f27d` |
+| `ranged`   | `Humans_Female_FlamingFist_Ranger_B_ec34598b-0a16-4b50-b271-c6682893837f`           |
+| `dino`     | `BASE_Dilophosaurus_ea400d0d-f3cc-4e12-b1a3-faf7e63e7780`                           |
+| `undead`   | `Undead_DarkJusticiar_Boss_89419ac3-95d1-4c90-9a29-7b6445acb270`                    |
 
 
 ## Other info
